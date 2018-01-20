@@ -92,7 +92,23 @@ class UCOMMAND:
 		
 	def toCanonical(self, nativeNBT, architecture, version): # Stick this in a superclass
 		return fromNative(self, nativeNBT, self.TYPE,architecture,version)
-	
+
+	def __str__(self):
+		result = self.TYPE+" at "+str(self.position[0])+","+str(self.position[1])+","+str(self.position[2])+": "
+		result = result+"\n"+self.customname
+		result = result+"\n"+self.commandstats
+		result = result+"\n"+self.command
+		result = result+"\n"+str(self.successcount)
+		result = result+"\n"+self.lastoutput
+		result = result+"\n"+str(self.trackoutput)
+		result = result+"\n"+str(self.powered)
+		result = result+"\n"+str(self.auto)
+		result = result+"\n"+str(self.conditionmet)
+		result = result+"\n"+str(self.updatelastexecution)
+		result = result+"\n"+str(self.lastexecution)
+		
+		return result
+		
 class USIGN:
 	TYPE = "SIGN"
 	
@@ -141,3 +157,9 @@ def testSign():
 #	bedrocksign = usign.toCanonical("BEDROCK","1_2")
 	
 	print usign,"\n",javasign,"\n",bedrocksign,"\n",usignFromJava,"\n",usignFromJava2,"\n",usignFromBedrock
+
+def testCommand():
+	ucommand = UCOMMAND((7654,9347,123), "customname", "commandstats", "command", 1, "lastoutput", 1, 0, 1, 1, 234, 456) # Type specific
+	javacommand = ucommand.toNative("JAVA","1_12")
+	
+	print ucommand,"\n",javacommand
