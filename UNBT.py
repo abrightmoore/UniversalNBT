@@ -4,9 +4,12 @@
 # This project seeks to unify the NBT structures in use across the Java 
 #  and Bedrock architectures, account for version differences, and simplify
 #  the effort of working with tile entities.
-# To achieve this, the map maker works with a 'Universal Tile Entity' which 
+# To achieve this, the map maker works with a 'Universal Entity' which 
 #  makes just-in-time dynamic calls to version-specific handlers which
-#  take care of the property translation into actionable NBT.
+#  take care of the property translation into actionable NBT. The rationale
+#  for this is that if we have to write a bespoke mapping routine for all
+#  the various Minecraft versions, let's do it in one place using a modular
+#  and extensible approach.
 #
 # As an example, a sign in Bedrock is:
 #   id: TAG_String = "Sign"
