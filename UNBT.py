@@ -43,6 +43,7 @@ import time
 
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float
 
+BLOCKENTITYHANDLERPREFIX = "BE_"
 
 def getModule(theModule):
 	#imageGenerators = glob.glob(moduleName)
@@ -55,7 +56,7 @@ def getModule(theModule):
 def toNative(tileEntity,form,architecture,version):
 	''' Choose a handler from the file system, invoke it, and get an the corresponding object back in return
 	'''
-	theModule = "TE_"+form+"_"+architecture+"_"+version+".py"
+	theModule = BLOCKENTITYHANDLERPREFIX+form+"_"+architecture+"_"+version+".py"
 	m = getModule(theModule)
 	result = m.toNative(tileEntity)
 	return result
@@ -63,7 +64,7 @@ def toNative(tileEntity,form,architecture,version):
 def fromNative(tileEntity, nativeNBT,form,architecture,version):
 	''' Choose a handler from the file system, invoke it, and get an the corresponding object back in return
 	'''
-	theModule = "TE_"+form+"_"+architecture+"_"+version+".py"
+	theModule = BLOCKENTITYHANDLERPREFIX+form+"_"+architecture+"_"+version+".py"
 	m = getModule(theModule)
 	result = m.fromNative(nativeNBT)
 	return result
@@ -72,9 +73,19 @@ def fromNative(tileEntity, nativeNBT,form,architecture,version):
 class UCOMMAND:
 	TYPE = "COMMAND"
 	
-	def __init__(self, lines, position): # Type specific
-		self.lines = lines
+	def __init__(self, position, customname, commandstats, command, successcount, lastoutput, trackoutput, powered, auto, conditionmet, updatelastexecution, lastexecution): # Type specific
 		self.position = position
+		self.customname = customname
+		self.commandstats = commandstats # Dictionary {}
+		self.command = command
+		self.successcount = successcount
+		self.lastoutput = lastoutput
+		self.trackoutput = trackoutput
+		self.powered = powered
+		self.auto = auto
+		self.conditionmet = conditionmet
+		self.updatelastexecution = updatelastexecution
+		self.lastexecution = lastexecution
 		
 	def toNative(self, architecture, version): # Stick this in a superclass
 		return toNative(self,self.TYPE,architecture,version)
@@ -82,9 +93,6 @@ class UCOMMAND:
 	def toCanonical(self, nativeNBT, architecture, version): # Stick this in a superclass
 		return fromNative(self, nativeNBT, self.TYPE,architecture,version)
 	
-
-
-
 class USIGN:
 	TYPE = "SIGN"
 	

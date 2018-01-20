@@ -4,7 +4,7 @@ import json
 
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float
 
-from UTE import USIGN
+from UNBT import USIGN
 
 def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
