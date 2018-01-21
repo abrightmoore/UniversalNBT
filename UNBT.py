@@ -43,6 +43,7 @@
 import glob
 import sys
 import time
+import json
 
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float
 
@@ -64,13 +65,36 @@ def toNative(tileEntity,form,architecture,version):
 	result = m.toNative(tileEntity)
 	return result
 
-def fromNative(tileEntity, nativeNBT,form,architecture,version):
+def fromNative(nativeNBT,form,architecture,version):
 	''' Choose a handler from the file system, invoke it, and get an the corresponding object back in return
 	'''
 	theModule = BLOCKENTITYHANDLERPREFIX+form+"_"+architecture+"_"+version+".py"
 	m = getModule(theModule)
 	result = m.fromNative(nativeNBT)
 	return result
+
+def getNativeIDsAndMetaData(form):
+	''' Returns a list of the identifiers with known adapters/handlers
+	'''
+	pattern = BLOCKENTITYHANDLERPREFIX+form+"_*.py"
+	adapters = glob.glob(pattern) # Get the list of available handlers / adapters for various entity types
+	print 'Found %s block entity adapters:' % (len(adapters))
+	ids = []
+	for adapter in adapters:
+		meta = adapter.split("_")
+		m = getModule(adapter)
+		ids.append((m.getNativeID(),adapter,meta[0],meta[1],meta[2],meta[3],meta[4][:-3]))
+	return ids
+
+def getNativeIDs(form):
+	''' Returns a list of the identifiers with known adapters/handlers
+	'''
+	idMap = getNativeIDsAndMetaData(form)
+	ids = []
+	for (id,adapter,label,fm,arch,majorVer,minorVer) in idMap:
+		ids.append(id)
+	return ids
+
 	
 # Types
 class UCOMMAND:
@@ -93,22 +117,20 @@ class UCOMMAND:
 	def toNative(self, architecture, version): # Stick this in a superclass
 		return toNative(self,self.TYPE,architecture,version)
 		
-	def toCanonical(self, nativeNBT, architecture, version): # Stick this in a superclass
-		return fromNative(self, nativeNBT, self.TYPE,architecture,version)
-
 	def __str__(self):
+		# print json.dumps(self.commandstats)
 		result = self.TYPE+" at "+str(self.position[0])+","+str(self.position[1])+","+str(self.position[2])+": "
-		result = result+"\n"+self.customname
-		result = result+"\n"+self.commandstats
-		result = result+"\n"+self.command
-		result = result+"\n"+str(self.successcount)
-		result = result+"\n"+self.lastoutput
-		result = result+"\n"+str(self.trackoutput)
-		result = result+"\n"+str(self.powered)
-		result = result+"\n"+str(self.auto)
-		result = result+"\n"+str(self.conditionmet)
-		result = result+"\n"+str(self.updatelastexecution)
-		result = result+"\n"+str(self.lastexecution)
+		result = result+"\ncustomname = "+self.customname
+		result = result+"\ncommandstats = "+json.dumps(self.commandstats)
+		result = result+"\ncommand = "+self.command
+		result = result+"\nsuccesscount = "+str(self.successcount)
+		result = result+"\nlastoutput = "+json.dumps(self.lastoutput) # TODO: Dictionary
+		result = result+"\ntrackoutput = "+str(self.trackoutput)
+		result = result+"\npowered = "+str(self.powered)
+		result = result+"\nauto = "+str(self.auto)
+		result = result+"\nconditionmet = "+str(self.conditionmet)
+		result = result+"\nupdatelastexecution = "+str(self.updatelastexecution)
+		result = result+"\nlastexecution = "+str(self.lastexecution)
 		
 		return result
 		
@@ -122,13 +144,15 @@ class USIGN:
 	def toNative(self, architecture, version): # Stick this in a superclass
 		return toNative(self,self.TYPE,architecture,version)
 		
-	def toCanonical(self, nativeNBT, architecture, version): # Stick this in a superclass
-		return fromNative(self, nativeNBT, self.TYPE,architecture,version)
-		
 	def __str__(self):
+		# TODO: Formatting for visibility/debugging
 		result = self.TYPE+" at "+str(self.position[0])+","+str(self.position[1])+","+str(self.position[2])+": "+str(self.lines)
 		return result
 
+##########################
+###		UNIT TESTS     ###
+##########################
+		
 def testSign():
 	usign = USIGN(["Line 1", "Line 2", "Line 3", "Line 4"],(1,2,3)) # Canonical
 	javasign = usign.toNative("JAVA","1_12")

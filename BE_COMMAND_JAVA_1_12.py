@@ -6,6 +6,9 @@ from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Long, TAG_Byte_A
 
 from UNBT import UCOMMAND
 
+def getNativeID():
+	return "minecraft:command_block"
+
 def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
 	position = canonical.position
@@ -20,7 +23,7 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 	conditionmet = canonical.conditionmet
 	updatelastexecution = canonical.updatelastexecution 
 	lastexecution = canonical.lastexecution
-	id = "minecraft:command_block"
+	id = getNativeID()
 	(x,y,z) = canonical.position
 	
 	# Create native-compatible NBT and return it

@@ -6,13 +6,16 @@ from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_
 
 from UNBT import USIGN
 
+def getNativeID():
+	return "minecraft:sign"
+
 def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
 	Text1 = canonical.lines[0]
 	Text2 = canonical.lines[1]
 	Text3 = canonical.lines[2]
 	Text4 = canonical.lines[3]
-	id = "minecraft:sign"
+	id = getNativeID()
 	(x,y,z) = canonical.position
 	
 	# Create native-compatible NBT and return it

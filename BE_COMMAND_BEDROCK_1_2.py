@@ -6,6 +6,9 @@ from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_
 
 from UNBT import UCOMMAND
 
+def getNativeID():
+	return "CommandBlock"
+
 def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
 	position = canonical.position
@@ -22,7 +25,7 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Not used in Bedrock
 	# updatelastexecution = canonical.updatelastexecution 
 	# lastexecution = self.lastexecution
-	id = "CommandBlock"
+	id = getNativeID()
 	(x,y,z) = canonical.position
 	
 	# Create native-compatible NBT and return it

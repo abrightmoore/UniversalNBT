@@ -4,19 +4,22 @@ from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_
 
 from UNBT import USIGN
 
+def getNativeID():
+	return "Sign"
+
 def toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
 	Text1 = canonical.lines[0]
 	Text2 = canonical.lines[1]
 	Text3 = canonical.lines[2]
 	Text4 = canonical.lines[3]
-	id = "Sign"
+	id = getNativeID()
 	(x,y,z) = canonical.position
 	
 	# Create native-compatible NBT and return it
 	control = TAG_Compound()
 	control["id"] = TAG_String(id)
-	control["Text"] = TAG_String(Text1+"\n"+Text2+"\n"+Text3+"\n"+Text4)
+	control["Text"] = TAG_String(Text1+"\n"+Text2+"\n"+Text3+"\n"+Text4) # TODO: Need to prevent appending more newlines than needed
 	control["isMovable"] = TAG_Int(1)
 	control["x"] = TAG_Int(x)
 	control["y"] = TAG_Int(y)
