@@ -1,6 +1,7 @@
 # @TheWorldFoundry
 
 import json
+import string
 
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float
 
@@ -9,13 +10,28 @@ from UNBT import UCOMMAND
 def getNativeID():
 	return "CommandBlock"
 
+def parseCommandToBedrock(command):
+	''' This reformats the command string from the canonical form into the native-compatible one
+		Some requirements:
+		1. Bedrock doesn't use the namespace prefix so it needs to be removed
+		2. Block name references that are different need to be identified and handled
+		3. TODO: more rules - like handling selector differences
+	'''
+	print "Processing command: ",command
+	
+	# 1. Remove "minecraft:" namespace prefixes
+	result = string.replace(command,"minecraft:","")
+	print "Processed command, result: ",result
+	return result
+
+	
 def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
 	position = canonical.position
 	customname = canonical.customname
 	# Not used in Bedrock
 	# commandstats = canonical.commandstats # Dictionary {}. This is a runtime artifact. Should it be translated? TODO: Find out.
-	command = canonical.command
+	command = parseCommandToBedrock(canonical.command)
 	successcount = canonical.successcount
 	lastoutput = canonical.lastoutput
 	trackoutput = canonical.trackoutput

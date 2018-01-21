@@ -47,17 +47,27 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
 	# Data transformation, and any validation
 	position = (nativeNBT["x"].value,nativeNBT["y"].value,nativeNBT["z"].value)
-	customname = nativeNBT["CustomName"].value
+	if "CustomName" in nativeNBT: customname = nativeNBT["CustomName"].value
+	else: customname = ""
 	commandstats = {} # TODO: Find out if this is persisted.
-	command = nativeNBT["Command"].value
-	successcount = nativeNBT["SuccessCount"].value
-	lastoutput = nativeNBT["LastOutput"].value
-	trackoutput = nativeNBT["TrackOutput"].value
-	powered = nativeNBT["powered"].value
-	auto = nativeNBT["auto"].value
-	conditionmet = nativeNBT["conditionMet"].value
-	updatelastexecution = nativeNBT["UpdateLastExecution"].value
-	lastexecution = nativeNBT["LastExecution"].value
+	if "Command" in nativeNBT: command = nativeNBT["Command"].value
+	else: command = ""
+	if "SuccessCount" in nativeNBT: successcount = nativeNBT["SuccessCount"].value
+	else: successcount = 0
+	if "LastOutput" in nativeNBT:	lastoutput = nativeNBT["LastOutput"].value
+	else: lastoutput = ""
+	if "TrackOutput" in nativeNBT: trackoutput = nativeNBT["TrackOutput"].value
+	else: trackoutput = 0
+	if "powered" in nativeNBT: powered = nativeNBT["powered"].value
+	else: powered = 0
+	if "auto" in nativeNBT: auto = nativeNBT["auto"].value
+	else: auto = 0
+	if "conditionMet" in nativeNBT: conditionmet = nativeNBT["conditionMet"].value
+	else: conditionmet = 0
+	if "UpdateLastExecution" in nativeNBT: updatelastexecution = nativeNBT["UpdateLastExecution"].value
+	else: updatelastexecution = 0
+	if "LastExecution" in nativeNBT: lastexecution = nativeNBT["LastExecution"].value
+	else: lastexecution = 0
 	
 	# Create canonical and return it
 	return UCOMMAND(position, customname, commandstats, command, successcount, lastoutput, trackoutput, powered, auto, conditionmet, updatelastexecution, lastexecution) # Type specific
