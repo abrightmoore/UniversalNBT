@@ -99,7 +99,7 @@ def getNativeIDs(form):
 # Types
 class UCOMMAND:
 	TYPE = "COMMAND"
-	
+	BLOCKIDS = [137,188,189,210,211]
 	def __init__(self, position, customname, commandstats, command, successcount, lastoutput, trackoutput, powered, auto, conditionmet, updatelastexecution, lastexecution): # Type specific
 		self.position = position
 		self.customname = customname
@@ -136,6 +136,7 @@ class UCOMMAND:
 		
 class USIGN:
 	TYPE = "SIGN"
+	BLOCKIDS = [63,68,323]
 	
 	def __init__(self, lines, position): # Type specific
 		self.lines = lines
@@ -155,8 +156,8 @@ class USIGN:
 		
 def testSign():
 	usign = USIGN(["Line 1", "Line 2", "Line 3", "Line 4"],(1,2,3)) # Canonical
-	javasign = usign.toNative("JAVA","1_12")
-	bedrocksign = usign.toNative("BEDROCK","1_2")
+	javasign = usign.toNative("UNKNOWN","1_12")
+	bedrocksign = usign.toNative("PE","1_2")
 	
 	# Java format example
 	control = TAG_Compound()
@@ -168,8 +169,8 @@ def testSign():
 	control["x"] = TAG_Int(111)
 	control["y"] = TAG_Int(2222)
 	control["z"] = TAG_Int(33333)
-	usignFromJava = usign.toCanonical(control,"JAVA","1_12")
-	usignFromJava2 = usign.toCanonical(javasign,"JAVA","1_12")
+	usignFromJava = usign.toCanonical(control,"UNKNOWN","1_12")
+	usignFromJava2 = usign.toCanonical(javasign,"UNKNOWN","1_12")
 	
 	# Bedrock format example
 	control = TAG_Compound()
@@ -179,7 +180,7 @@ def testSign():
 	control["x"] = TAG_Int(111111)
 	control["y"] = TAG_Int(22222)
 	control["z"] = TAG_Int(3333)	
-	usignFromBedrock = usign.toCanonical(control,"BEDROCK","1_2")
+	usignFromBedrock = usign.toCanonical(control,"PE","1_2")
 
 #	bedrocksign = usign.toCanonical("BEDROCK","1_2")
 	
@@ -187,6 +188,6 @@ def testSign():
 
 def testCommand():
 	ucommand = UCOMMAND((7654,9347,123), "customname", "commandstats", "command", 1, "lastoutput", 1, 0, 1, 1, 234, 456) # Type specific
-	javacommand = ucommand.toNative("JAVA","1_12")
+	javacommand = ucommand.toNative("UNKNOWN","1_12")
 	
 	print ucommand,"\n",javacommand
