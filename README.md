@@ -1,6 +1,6 @@
 # Why UniversalNBT (UNBT)?
 
-UNBT is a convenience API to simplify working between different versions of the Minecraft game.
+UNBT is a convenience API to simplify working between different versions of the Minecraft game. It is designed with collaboration and community contribution as goals, structuring the code in a modular way so that people can add mapping modules incrementally over time as the need arises.
 
 # A common use case
 
@@ -32,7 +32,7 @@ Through the use of a standard format for all objects the act of translating betw
 
 # Example
 
-1. A sample MCEdit Filter is supplied, called UniversalNBT_v1.py. This is installed in MCEdit Filters.
+1. A sample MCEdit Filter is supplied, called UniversalNBT_MCEditUnifiedFilter_v1.py. This is installed in MCEdit Filters.
 2. Create a UNBT folder in the MCEdit Filters directory and place files UNBT.PY and __init__.py in it.
 3. Copy the files starting with BE*.py into the director where MCEdit runs from, and the MCEdit Filters directory.
 4. Open a Java world in MCEdit, select an area containing Signs and Command Blocks, and run the filter in 'READ' mode
