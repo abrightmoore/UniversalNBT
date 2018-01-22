@@ -9,10 +9,10 @@ def getNativeID():
 
 def toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
-	Text1 = canonical.lines[0]
-	Text2 = canonical.lines[1]
-	Text3 = canonical.lines[2]
-	Text4 = canonical.lines[3]
+	Text1 = canonical.lines[0].replace("\n","")
+	Text2 = canonical.lines[1].replace("\n","")
+	Text3 = canonical.lines[2].replace("\n","")
+	Text4 = canonical.lines[3].replace("\n","")
 	id = getNativeID()
 	(x,y,z) = canonical.position
 	
