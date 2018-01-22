@@ -99,9 +99,10 @@ def perform(level,box,options): # MCEdit Unified
 					# Get the new native nbt...
 					e = obj.toNative(architecture,version)
 					chunk.TileEntities.append(e)
+		level.markDirtyBox(box)
 					
 			
 
 	else:
 		print "Unknown option selected."
-	level.markDirtyBox(box)
+	
