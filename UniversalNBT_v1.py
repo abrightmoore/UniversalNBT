@@ -21,7 +21,7 @@ def perform(level,box,options): # MCEdit Unified
 	print "Process mode ", options["Mode"]
 	
 	if options["Mode"] == "READ":
-		CACHEDRESULTS = None
+		CACHEDRESULTS = []
 
 		# For each chunk in the selection, gather the NBT 
 		for (chunk, _, _) in level.getChunkSlices(box):
@@ -48,6 +48,7 @@ def perform(level,box,options): # MCEdit Unified
 									print "WARN: ","Duplicate handlers found for ",id
 								newObj = UNBT.fromNative(e,UNBT.USIGN.TYPE,architecture,majorVer+"_"+minorVer)
 								print "NEW CANONICAL CREATED:",newObj
+								CACHEDRESULTS.append((newObj,UNBT.USIGN.TYPE))
 								foundHandler = True
 						if foundHandler == False:
 							print "WARN: ","No handler found for ",UNBT.USIGN.TYPE," at ",(x,y,z)
@@ -66,13 +67,41 @@ def perform(level,box,options): # MCEdit Unified
 									print "WARN: ","Duplicate handlers found for ",id
 								newObj = UNBT.fromNative(e,UNBT.UCOMMAND.TYPE,architecture,majorVer+"_"+minorVer)
 								print "NEW CANONICAL CREATED:",newObj
+								CACHEDRESULTS.append((newObj,UNBT.UCOMMAND.TYPE))
 								foundHandler = True
 						if foundHandler == False:
 							print "WARN: ","No handler found for ",UNBT.UCOMMAND.TYPE," at ",(x,y,z)
 
-						
 	elif options["Mode"] == "WRITE":
-		print "Not implemented"
+		architecture = level.gamePlatform.upper() # At the time of writing this is UNKNOWN for Java and PE for Bedrock.
+		# Until we've got a way of getting the version out of level, this is static
+		version = "1_2" # a default
+		for (id,adapter,label,fm,arch,majorVer,minorVer) in nativeSignIDMetaList:
+			if architecture == arch:
+				version = majorVer+"_"+minorVer # TODO: Choose the latest version? Ask the user? Needs more thought
+		# For each object in the box and within CACHEDRESULTS, attempt to write out to the world based on the type of world it is.
+		for (obj,objType) in CACHEDRESULTS:
+			(x,y,z) = obj.position
+			print "Found ",objType," at ",(x,y,z)
+			if (x,y,z) in box: # Only make changes within the selection box, otherwise the user won't know what's going on. 
+				# Confirm there is a block entity at the target location
+				blockID = level.blockAt(x,y,z)
+				if blockID in obj.BLOCKIDS: # This is a candidate for blasting NBT
+					# Remove any existing NBT - this can be in a function
+					chunk = level.getChunk(x / 16, z / 16)
+					for e in chunk.TileEntities: # Loop through all the block entities in this chunk
+						ex = e["x"].value
+						ey = e["y"].value
+						ez = e["z"].value
+						if ex == x and ey == y and ez == z: # Match... purge
+							chunk.TileEntities.remove(e) # Goodbye
+					# Now... make a new 'e'
+					# Get the new native nbt...
+					e = obj.toNative(architecture,version)
+					chunk.TileEntities.append(e)
+					
+			
+
 	else:
 		print "Unknown option selected."
-	
+	level.markDirtyBox(box)
