@@ -94,9 +94,40 @@ def getNativeIDs(form):
 	for (id,adapter,label,fm,arch,majorVer,minorVer) in idMap:
 		ids.append(id)
 	return ids
-
 	
 # Types
+class UCHEST:
+	TYPE = "CHEST"
+	BLOCKIDS = [54,146] # Todo - add other containers with identical NBT profiles
+
+	def __init__(self,position,customname,lock,items,loottable,loottableseed):
+		self.position = position
+		self.customname = customname
+		self.lock = lock
+		self.items = items # list of items, which includes lists of lore and enchants
+		self.loottable = loottable
+		self.loottableseed = loottableseed
+
+	def toNative(self, architecture, version): # Stick this in a superclass
+		return toNative(self,self.TYPE,architecture,version)		
+
+	def __str__(self):
+		# print json.dumps(self.commandstats)
+		result = self.TYPE+" at "+str(self.position[0])+","+str(self.position[1])+","+str(self.position[2])+": "
+		result = result+"\ncustomname = "+self.customname
+		result = result+"\nlock = "+self.lock
+		result = result+"\nloottable = "+self.loottable
+		result = result+"\nloottableseed = "+str(self.loottableseed)
+		for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_display_ench_l) in self.items:
+			result = result+str(item_id)+" "+str(item_damage)+" "+str(item_slot)+" "+str(item_count)+" "+item_display_name+"\nLore:\n"
+			for lore in item_display_lore_l:
+				result = result+lore+","
+			result = result + "\nEnchants:\n"
+			for (ench_id,ench_lvl) in item_display_ench_l:
+				result = result+str(ench_id)+":"+str(ench_lvl)+" "
+		
+		return result
+		
 class UCOMMAND:
 	TYPE = "COMMAND"
 	BLOCKIDS = [137,188,189,210,211]

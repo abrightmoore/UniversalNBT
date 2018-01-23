@@ -10,11 +10,16 @@ inputs = (
 def perform(level,box,options): # MCEdit Unified
 	global CACHEDRESULTS
 	
-	# Some global tables - TODO: Optimise this based on likely use cases
+	# Some global tables - TODO: Optimise this based on likely use cases. Fix this so it isn't 1:1 for each block type!!!
 	nativeSignIDList = UNBT.getNativeIDs(UNBT.USIGN.TYPE)
 	nativeSignIDMetaList = UNBT.getNativeIDsAndMetaData(UNBT.USIGN.TYPE)
+
 	nativeCommandIDList = UNBT.getNativeIDs(UNBT.UCOMMAND.TYPE)
 	nativeCommandIDMetaList = UNBT.getNativeIDsAndMetaData(UNBT.UCOMMAND.TYPE)
+
+	nativeChestIDList = UNBT.getNativeIDs(UNBT.UCHEST.TYPE)
+	nativeChestIDMetaList = UNBT.getNativeIDsAndMetaData(UNBT.UCHEST.TYPE)
+
 	print "Level type = ",str(level.gamePlatform)
 	print "Level version = ", str(level.gameVersion)
 	print "Level name = ", str(level.displayName)
@@ -72,6 +77,25 @@ def perform(level,box,options): # MCEdit Unified
 						if foundHandler == False:
 							print "WARN: ","No handler found for ",UNBT.UCOMMAND.TYPE," at ",(x,y,z)
 
+					if e["id"].value in nativeChestIDList: # This is a sign because it has an NBT id which matches one of the known values
+						# Find out what architecture this NBT object corresponds to
+						print "Found ",UNBT.UCHEST.TYPE,": ",str(e)
+
+						# Work out which architecture and version this definition is from.
+						# TODO: Make this a lookup via dictionary
+						foundHandler = False
+						for (id,adapter,label,fm,architecture,majorVer,minorVer) in nativeChestIDMetaList:
+							print "Working with: ",id,adapter,label,fm,architecture,majorVer,minorVer
+							if id == e["id"].value: # Matching definition located. TODO: Handle version precedence when duplicate ids found across versions
+								if foundHandler == True:
+									print "WARN: ","Duplicate handlers found for ",id
+								newObj = UNBT.fromNative(e,UNBT.UCHEST.TYPE,architecture,majorVer+"_"+minorVer)
+								print "NEW CANONICAL CREATED:",newObj
+								CACHEDRESULTS.append((newObj,UNBT.UCHEST.TYPE))
+								foundHandler = True
+						if foundHandler == False:
+							print "WARN: ","No handler found for ",UNBT.UCHEST.TYPE," at ",(x,y,z)
+
 	elif options["Mode"] == "WRITE":
 		architecture = level.gamePlatform.upper() # At the time of writing this is UNKNOWN for Java and PE for Bedrock.
 		# Until we've got a way of getting the version out of level, this is static
@@ -101,8 +125,6 @@ def perform(level,box,options): # MCEdit Unified
 					chunk.TileEntities.append(e)
 		level.markDirtyBox(box)
 					
-			
-
 	else:
 		print "Unknown option selected."
 	
