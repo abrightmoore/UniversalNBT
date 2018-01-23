@@ -44,6 +44,13 @@ import glob
 import sys
 import time
 import json
+import os.path
+import warnings
+import time
+import itertools
+import unicodedata
+import pprint
+import urllib2
 
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float
 
@@ -94,7 +101,90 @@ def getNativeIDs(form):
 	for (id,adapter,label,fm,arch,majorVer,minorVer) in idMap:
 		ids.append(id)
 	return ids
+
+def itemNameToNumber(name,associations):
+	print name,type(name)
+	result = -1
+	if "items" in associations:
+		items = associations["items"]
+		key = name.replace("minecraft:","") # TODO: Proper namespace handling 
+		if key in items:
+			result = items[key]
+	print result
+	return result
 	
+def itemNumberToName(number,associations):
+	print number,type(number)
+	result = -1
+	if "items" in associations:
+		items = associations["items"]
+		for key in items.keys(): # TODO: Build a reverse dictionary for this and cache it instead of looping.
+			val = items[key]
+			if val == str(number):
+				result = key
+				break
+	print result
+	return result
+	
+def updateAssociations(): # TODO: Move this to a Bedrock specific helper class. It doesn't belong in canonical handling
+	''' @PathwayMC - code by NEONERZ. See: https://github.com/PathwayStudios/TranslateJava2Bedrock/blob/master/TranslateJava2Bedrock.py
+	'''
+	#global idMappings # Cached
+	# get pe-item-associations file, and check if user has latest copy
+	#if idMappings != None:
+	associations = 0
+	upgradeAssocations = 9
+	idMappings = []
+	idMappingsRemote = []
+
+	if os.path.isfile('pe-item-associations.json'): 
+		idMappings = json.load(open('pe-item-associations.json'))
+		associations = 1
+
+	req = urllib2.Request('http://pathway.studio/resources/pe-item-associations.json')
+	url=urllib2		
+
+	try:
+		response = urllib2.urlopen(req)
+		idMappingsRemote = json.loads(response.read())
+
+	except url.URLError as e:
+		print "Error getting associations file: " +str(e.reason)
+		
+	if ("version" in idMappingsRemote): 
+		if ("version" in idMappings):
+			if idMappingsRemote["version"] > idMappings["version"]:
+				with open("pe-item-associations.json", "w") as text_file:
+					json.dump(idMappingsRemote, text_file, ensure_ascii=False)
+				idMappings = idMappingsRemote
+				associations = 1
+				upgradeAssocations = 1
+				print("Updated associations file to version "+idMappings["version"])
+		else:
+			with open("pe-item-associations.json", "w") as text_file:
+				json.dump(idMappingsRemote, text_file)	
+			idMappings = idMappingsRemote
+			associations = 1
+			upgradeAssocations = 1
+			print("Updated associations file to version "+idMappings["version"])
+			
+	if upgradeAssocations == 1:
+		print "Associations File Upgraded to: "+idMappings["version"]
+	elif associations == 0:
+		print "**CAUTION ASSOCIATIONS FILE NOT FOUND**"
+
+	# list of tile entities to remove instead of trying to translate
+	removeTileEntities = ['minecraft:structure_block']	
+	# removeEntities is currently unused until entity support is added
+	# currently ALL entities are removed
+	removeEntities = ['ArmorStand']
+
+	# some tile entity IDs have changed (support for pre-item name IDs)
+	tileEntityNameReplacements = {'Control':'CommandBlock',
+								  'Noteblock':'Music',
+								  'EnchantingTable':'EnchantTable'}
+	return idMappings
+
 # Types
 class UCHEST:
 	TYPE = "CHEST"
@@ -117,7 +207,7 @@ class UCHEST:
 		result = result+"\ncustomname = "+self.customname
 		result = result+"\nlock = "+self.lock
 		result = result+"\nloottable = "+self.loottable
-		result = result+"\nloottableseed = "+str(self.loottableseed)
+		result = result+"\nloottableseed = "+str(self.loottableseed)+"\n"
 		for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_display_ench_l) in self.items:
 			result = result+str(item_id)+" "+str(item_damage)+" "+str(item_slot)+" "+str(item_count)+" "+item_display_name+"\nLore:\n"
 			for lore in item_display_lore_l:

@@ -1,16 +1,15 @@
 # @TheWorldFoundry
 
-import json
-
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float, TAG_Long
 
-from UNBT import UCHEST
+from UNBT import UCHEST,itemNumberToName,itemNameToNumber,updateAssociations
 
 def getNativeID():
-	return "minecraft:chest"
+	return "Chest"
 
-def	toNative(canonical): # Version specific mapping to NBT from universal class
+def toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
+	associations = updateAssociations()
 	position = canonical.position
 	customname = canonical.customname
 	lock = canonical.lock
@@ -34,7 +33,7 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 	itemsTag = control["Items"]
 	for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l) in items:
 		item = TAG_Compound()
-		item["id"] = TAG_String(item_id)
+		item["id"] = TAG_Short(int(itemNameToNumber(item_id,associations)))
 		item["Damage"] = TAG_Short(item_damage)
 		item["Count"] = TAG_Byte(item_count)
 		item["Slot"] = TAG_Byte(item_slot)
@@ -56,6 +55,7 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 				for lore in item_display_lore_l:
 					display["Lore"].append(TAG_String(lore))
 		itemsTag.append(item)		
+	control["isMovable"] = TAG_Int(1)
 	print control
 	return control
 
@@ -76,8 +76,9 @@ def interpret(text):
 		print text
 		result = json.loads(text)
 		return result["text"]
-	
+		
 def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
+	associations = updateAssociations()
 	# Data transformation, and any validation
 	x = nativeNBT["x"].value
 	y = nativeNBT["y"].value
@@ -87,13 +88,12 @@ def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
 	else: customname = ""
 	if "Lock" in nativeNBT: lock = nativeNBT["Lock"].value
 	else: lock = ""
-	items = []	
 	if "Items" in nativeNBT:
 		undefinedslot = 0
-
+		items = []
 		for item in nativeNBT["Items"]: # JSON?
 			print "Parsing Item: ",item
-			if "id" in item: item_id = item["id"].value
+			if "id" in item: item_id = itemNumberToName(item["id"].value,associations)
 			else: item_id = ""
 			if "Damage" in item: item_damage = item["Damage"].value
 			else: item_damage = 0

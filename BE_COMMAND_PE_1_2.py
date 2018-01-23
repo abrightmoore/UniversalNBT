@@ -54,23 +54,23 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 #	control["LPCondionalMode"] = TAG_Int(lpconditionalmode) # <---- not in model
 #	control["LPRedstoneMode"] = TAG_Int(lpredstonemode) # <---- not in model
 
-	control["LastOutput"] = TAG_String(lastoutput)
+#	control["LastOutput"] = TAG_String(lastoutput)
 
-	lastoutputparamsctl = TAG_List()
+#	lastoutputparamsctl = TAG_List()
 #	control["LastOutputParams"] = lastoutputparamsctl # <---- not in model
 	# TODO: parse the params and append to the list
 	
-	control["SuccessCount"] = TAG_Int(successcount)		
+#	control["SuccessCount"] = TAG_Int(successcount)		
 	control["TrackOutput"] = TAG_Byte(trackoutput)
 
 #	control["Version"] = TAG_Int(version) # <---- not in model
 	
 	control["auto"] = TAG_Byte(auto)
 	control["conditionMet"] = TAG_Byte(conditionmet)
-	control["isMovable"] = TAG_Byte(1) #TODO: Should this be editable?
+#	control["isMovable"] = TAG_Byte(1) #TODO: Should this be editable?
 
 	
-	control["powered"] = TAG_Byte(powered)
+#	control["powered"] = TAG_Byte(powered)
 	
 	# Not used in bedrock
 #	control["LastExecution"] = TAG_Long(lastexecution)
