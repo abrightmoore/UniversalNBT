@@ -189,7 +189,8 @@ def updateAssociations(): # TODO: Move this to a Bedrock specific helper class. 
 class UCHEST:
 	TYPE = "CHEST"
 	BLOCKIDS = [54,146] # Todo - add other containers with identical NBT profiles
-
+	SLOTSMAX = 27
+	
 	def __init__(self,position,customname,lock,items,loottable,loottableseed):
 		self.position = position
 		self.customname = customname
