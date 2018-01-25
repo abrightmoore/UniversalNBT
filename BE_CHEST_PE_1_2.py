@@ -76,7 +76,6 @@ def interpret(text):
 	if text == "null":
 		return ""
 	else:
-		print text
 		result = json.loads(text)
 		return result["text"]
 		

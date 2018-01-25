@@ -103,18 +103,18 @@ def getNativeIDs(form):
 	return ids
 
 def itemNameToNumber(name,associations):
-	print name,type(name)
+	#print name,type(name)
 	result = -1
 	if "items" in associations:
 		items = associations["items"]
 		key = name.replace("minecraft:","") # TODO: Proper namespace handling 
 		if key in items:
 			result = items[key]
-	print result
+	#print result
 	return result
 	
 def itemNumberToName(number,associations):
-	print number,type(number)
+	#print number,type(number)
 	result = -1
 	if "items" in associations:
 		items = associations["items"]
@@ -123,7 +123,7 @@ def itemNumberToName(number,associations):
 			if val == str(number):
 				result = key
 				break
-	print result
+	#print result
 	return result
 	
 def updateAssociations(): # TODO: Move this to a Bedrock specific helper class. It doesn't belong in canonical handling
