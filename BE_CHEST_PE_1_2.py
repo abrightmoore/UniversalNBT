@@ -37,26 +37,28 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 		item["Damage"] = TAG_Short(item_damage)
 		item["Count"] = TAG_Byte(item_count)
 		item["Slot"] = TAG_Byte(item_slot)
-		if len(item_tag_ench_l) > 0:
+		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0::
 			item["tag"] = TAG_Compound()
 			tag = item["tag"]
-			tag["ench"] = TAG_List()
-			ench = tag["ench"]
-			for (ench_id,ench_lvl) in item_tag_ench_l:
-				theEnch = TAG_Compound()
-				theEnch["id"] = TAG_Int(ench_id)
-				theEnch["lvl"] = TAG_Int(ench_lvl)
-				ench.append(theEnch)
-			tag["display"] = TAG_Compound()
-			display = tag["display"]
-			display["Name"] = TAG_String(item_display_name)
+			if len(item_tag_ench_l) > 0:
+				tag["ench"] = TAG_List()
+				ench = tag["ench"]
+				for (ench_id,ench_lvl) in item_tag_ench_l:
+					theEnch = TAG_Compound()
+					theEnch["id"] = TAG_Int(ench_id)
+					theEnch["lvl"] = TAG_Int(ench_lvl)
+					ench.append(theEnch)
+			if len(item_display_name) != "":
+				tag["display"] = TAG_Compound()
+				display = tag["display"]
+				display["Name"] = TAG_String(item_display_name)
 			if len(item_display_lore_l) > 0:
 				display["Lore"] = TAG_List()
 				for lore in item_display_lore_l:
 					display["Lore"].append(TAG_String(lore))
+
 		itemsTag.append(item)		
 	control["isMovable"] = TAG_Int(1)
-	print control
 	return control
 
 def reterpret(text):

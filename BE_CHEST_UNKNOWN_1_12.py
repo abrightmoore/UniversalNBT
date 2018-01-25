@@ -59,7 +59,7 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 				display["Lore"] = TAG_List()
 				for lore in item_display_lore_l:
 					display["Lore"].append(TAG_String(lore))
-		print "Item",item
+
 		itemsTag.append(item)		
 	print "toNative",control
 	return control
