@@ -7,7 +7,7 @@ from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_
 from UNBT import UCHEST
 
 def getNativeID():
-	return "Chest"
+	return "minecraft:chest"
 
 def	toNative(canonical): # Version specific mapping to NBT from universal class
 	# Data transformation, and any validation
@@ -61,7 +61,6 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 					display["Lore"].append(TAG_String(lore))
 
 		itemsTag.append(item)		
-	print "toNative",control
 	return control
 
 def reterpret(text):
