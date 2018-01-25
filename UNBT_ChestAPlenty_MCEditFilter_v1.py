@@ -22,11 +22,12 @@ def wrapText(text,length):
 	return textwrap.fill(text,length)
 
 def makeLore(ADJECTIVES,lineWrap):
+	PREP = ["There are","You see","You sense","Research shows","You uncover","Without doubt","There might be","Scholars say","A quick look shows","Close examination shows","We find"]	
 	INDIC = ["signs","hints","feelings","stenches","fingerprints","markings","glyphs","smells","bumps","cracks","shapes","knobs","buttons","stripes","chequers","tassels","wires","colours"]
 	NOUNS = ["magic","evil","dread","shame","honey","righteousnous","fear","happiness","sadness","sweat","vegemite","hope","silver","the ocean","lichen","moss","dirt","zombie flesh"]
 	QTY = ["all over","covering","dotted around","placed randomly on","sitting low on","climbing all the way up","underneath","on top of","encircling","obscuring","powering","charging"]
 	
-	result = "There are "+ADJECTIVES[randint(0,len(ADJECTIVES)-1)]+" "+INDIC[randint(0,len(INDIC)-1)]
+	result = PREP[randint(0,len(PREP)-1)]+" "+ADJECTIVES[randint(0,len(ADJECTIVES)-1)]+" "+INDIC[randint(0,len(INDIC)-1)]
 	if randint(1,10) > 6:
 		result = result+" of "+NOUNS[randint(0,len(NOUNS)-1)]
 	result = result+" "+QTY[randint(0,len(QTY)-1)]+" this item."
@@ -56,13 +57,13 @@ def generateItems(ADJECTIVES,qty):
 		# print "Item ID",item_id
 		item_display_lore_l = []		
 		item_tag_ench_l = []
-		item_display_name = "§"+formatting[randint(0,14)]+str(item_id.replace("minecraft:","").replace("_"," ").title())
+		item_display_name = "§"+formatting[randint(0,13)]+str(item_id.replace("minecraft:","").replace("_"," ").title())
 		if randint(1,10) > 8:
 			item_display_name = item_display_name+" of "+NOUNS[randint(0,len(NOUNS)-1)]
 			loreLines = makeLore(ADJECTIVES,len(item_display_name)).split("\n")
 			for lore in loreLines:
 				item_display_lore_l.append(lore)
-			if randint(1,10) > 3:
+			if randint(1,10) > 2:
 				for i in xrange(0,randint(1,3)):
 					ench = idEnchants[randint(0,len(idEnchants)-1)]
 					lvl = randint(1,5)
