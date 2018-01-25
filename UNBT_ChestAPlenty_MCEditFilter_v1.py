@@ -2,6 +2,8 @@
 import UNBT
 from random import randint
 import textwrap
+import os
+import directories
 
 import sys  
 reload(sys)  
@@ -47,6 +49,8 @@ def generateItems(ADJECTIVES,qty):
 	idItems = idMappings["items"]
 	idEnchant = idMappings["enchantments"]
 	idEnchants = idEnchant.keys()
+	idPotion = idMappings["potions"]
+	idPotions = idPotion.keys()
 	# print idEnchant
 	
 	items = []
@@ -60,6 +64,7 @@ def generateItems(ADJECTIVES,qty):
 		# print "Item ID",item_id
 		item_display_lore_l = []		
 		item_tag_ench_l = []
+		item_potion = ""
 		item_display_name = "§"+formatting[randint(0,13)]+str(item_id.replace("minecraft:","").replace("_"," ").title())
 		if randint(1,10) > 8:
 			item_display_name = item_display_name+" of "+NOUNS[randint(0,len(NOUNS)-1)]
@@ -71,11 +76,20 @@ def generateItems(ADJECTIVES,qty):
 					ench = idEnchants[randint(0,len(idEnchants)-1)]
 					lvl = randint(1,5)
 				item_tag_ench_l.append((int(idEnchant[ench]),lvl))
+		if item_id == "minecraft:tipped_arrow" or item_id == "minecraft:potion":
+			count = 100
+			while count > 0:
+				count -= 1
+				theId = idPotions[randint(0,len(idPotions)-1)]
+				if not theId.isdigit():
+					item_potion = "minecraft:"+idPotions[randint(0,len(idPotions)-1)]
+					count = 0
+				
 		# item_display_name = "\"Custom "+formatting[randint(0,15)]+str(item_id.replace("minecraft:","").replace("_"," ").title())+"\""
 		# print "Custom Name ",item_display_name
 		item_damage = 0 # Allow randoms?
 		item_count = 1
-		items.append((item_id,item_damage,slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l))
+		items.append((item_id,item_damage,slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion))
 		slot += 1
 	
 	# for i in xrange(0,100):		print makeLore(ADJECTIVES,140)
@@ -87,7 +101,7 @@ def generateItems(ADJECTIVES,qty):
 def perform(level,box,options): # MCEdit Unified
 	
 	# Read the adjectives list
-	ADJECTIVES = loadLinesFromFile("adjectives.txt")
+	ADJECTIVES = loadLinesFromFile(os.path.join(directories.filtersDir,"adjectives.txt"))
 	CONTAINERS = ["Chest","Locker","Box","Suitcase"]
 	
 	# Generate items and place in the selected chest block
@@ -134,7 +148,7 @@ def perform(level,box,options): # MCEdit Unified
 										for item in chestObj.items: # (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l)
 											newItems.append(item)
 										for i in xrange(len(newItems),UNBT.UCHEST.SLOTSMAX):
-											newItems.append(("PLACEHOLDER",0,0,0,"PLACEHOLDER",[],[])) # Junk entry to take up a slot in the chest
+											newItems.append(("PLACEHOLDER",0,0,0,"PLACEHOLDER",[],[],"")) # Junk entry to take up a slot in the chest
 										
 										# Reorder the item list
 										reorderedItems = []
@@ -143,9 +157,10 @@ def perform(level,box,options): # MCEdit Unified
 																	
 										newItems = []
 										slot = 0
-										for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l) in reorderedItems:
+										# print reorderedItems
+										for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion) in reorderedItems:
 											if item_id != "PLACEHOLDER":
-												newItems.append((item_id,item_damage,slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l)) # Put into the corresponding slot
+												newItems.append((item_id,item_damage,slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion)) # Put into the corresponding slot
 											slot += 1
 										# Adjust the chest to suit... pop generated items into slots
 										chestObj.items = newItems # Replace what's on the object, discarding the original

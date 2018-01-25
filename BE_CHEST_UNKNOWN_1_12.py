@@ -33,14 +33,14 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 	control["z"] = TAG_Int(z)
 	control["Items"] = TAG_List()
 	itemsTag = control["Items"]
-	for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l) in items:
+	for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion) in items:
 		
 		item = TAG_Compound()
 		item["id"] = TAG_String(item_id)
 		item["Damage"] = TAG_Short(item_damage)
 		item["Count"] = TAG_Byte(item_count)
 		item["Slot"] = TAG_Byte(item_slot)
-		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0:
+		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0 or item_potion != "":
 			item["tag"] = TAG_Compound()
 			tag = item["tag"]
 			if len(item_tag_ench_l) > 0:
@@ -59,6 +59,8 @@ def	toNative(canonical): # Version specific mapping to NBT from universal class
 				display["Lore"] = TAG_List()
 				for lore in item_display_lore_l:
 					display["Lore"].append(TAG_String(lore))
+			if item_potion != "":
+				tag["Potion"] = TAG_String(item_potion)
 
 		itemsTag.append(item)		
 	return control
@@ -113,6 +115,7 @@ def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
 			item_display_lore_l = []
 			item_tag_ench_l = []
 			item_display_name = ""
+			item_potion = ""
 			if "tag" in item:
 				item_tag = item["tag"]
 				if "display" in item_tag: # compound
@@ -128,7 +131,9 @@ def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
 						if "lvl" in ench: item_tag_ench_lvl = ench["lvl"].value
 						else: item_tag_ench_lvl = 0
 						item_tag_ench_l.append((item_tag_ench_id,item_tag_ench_lvl))
-			items.append((item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l))
+				if "Potion" in item_tag:
+					item_potion = item_tag["Potion"].value
+			items.append((item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion))
 	if "LootTable" in nativeNBT: loottable = nativeNBT["LootTable"].value
 	else: loottable = ""
 	if "LootTableSeed" in nativeNBT: loottableseed = nativeNBT["LootTableSeed"].value

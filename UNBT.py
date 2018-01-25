@@ -41,6 +41,7 @@
 
 
 import glob
+import os
 import sys
 import time
 import json
@@ -51,6 +52,7 @@ import itertools
 import unicodedata
 import pprint
 import urllib2
+import directories
 
 from pymclevel import nbt, TAG_Compound, TAG_List, TAG_Int, TAG_Byte_Array, TAG_Short, TAG_Byte, TAG_String, TAG_Double, TAG_Float
 
@@ -60,6 +62,7 @@ def getModule(theModule):
 	#imageGenerators = glob.glob(moduleName)
 	#theModule = imageGenerators[0]
 	#	print sys.path
+	#return __import__(os.path.join(directories.filtersDir,theModule[:-3]))
 	return __import__(theModule[:-3])
 	
 # Dynamic invoke instead of class inheritence for convenience of runtime replace/expansion/modularisation.
@@ -84,6 +87,7 @@ def getNativeIDsAndMetaData(form):
 	''' Returns a list of the identifiers with known adapters/handlers
 	'''
 	pattern = BLOCKENTITYHANDLERPREFIX+form+"_*.py"
+	#adapters = glob.glob(os.path.join(directories.filtersDir,pattern)) # Get the list of available handlers / adapters for various entity types
 	adapters = glob.glob(pattern) # Get the list of available handlers / adapters for various entity types
 	print 'Found %s block entity adapters:' % (len(adapters))
 	ids = []
@@ -136,9 +140,10 @@ def updateAssociations(): # TODO: Move this to a Bedrock specific helper class. 
 	upgradeAssocations = 9
 	idMappings = []
 	idMappingsRemote = []
+	filename = os.path.join(directories.filtersDir,'pe-item-associations.json')
 
-	if os.path.isfile('pe-item-associations.json'): 
-		idMappings = json.load(open('pe-item-associations.json'))
+	if os.path.isfile(filename): 
+		idMappings = json.load(open(filename))
 		associations = 1
 
 	req = urllib2.Request('http://pathway.studio/resources/pe-item-associations.json')
@@ -154,14 +159,14 @@ def updateAssociations(): # TODO: Move this to a Bedrock specific helper class. 
 	if ("version" in idMappingsRemote): 
 		if ("version" in idMappings):
 			if idMappingsRemote["version"] > idMappings["version"]:
-				with open("pe-item-associations.json", "w") as text_file:
+				with open(filename, "w") as text_file:
 					json.dump(idMappingsRemote, text_file, ensure_ascii=False)
 				idMappings = idMappingsRemote
 				associations = 1
 				upgradeAssocations = 1
 				print("Updated associations file to version "+idMappings["version"])
 		else:
-			with open("pe-item-associations.json", "w") as text_file:
+			with open(filename, "w") as text_file:
 				json.dump(idMappingsRemote, text_file)	
 			idMappings = idMappingsRemote
 			associations = 1
@@ -209,8 +214,8 @@ class UCHEST:
 		result = result+"\nlock = "+self.lock
 		result = result+"\nloottable = "+self.loottable
 		result = result+"\nloottableseed = "+str(self.loottableseed)+"\n"
-		for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_display_ench_l) in self.items:
-			result = result+str(item_id)+" "+str(item_damage)+" "+str(item_slot)+" "+str(item_count)+" "+item_display_name+"\nLore:\n"
+		for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_display_ench_l,item_potion) in self.items:
+			result = result+str(item_id)+" "+str(item_damage)+" "+str(item_slot)+" "+str(item_count)+" "+item_potion+" "+item_display_name+"\nLore:\n"
 			for lore in item_display_lore_l:
 				result = result+lore+","
 			result = result + "\nEnchants:\n"
