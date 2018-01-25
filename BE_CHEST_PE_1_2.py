@@ -22,7 +22,8 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 	# Create native-compatible NBT and return it
 	control = TAG_Compound()
 	control["id"] = TAG_String(id)
-	control["CustomName"] = TAG_String(lock)
+	control["CustomName"] = TAG_String(customname)
+	if lock != "": control["Lock"] = TAG_String(lock)
 	if loottable != "":
 		control["LootTable"] = TAG_String(loottable)
 		control["LootTableSeed"] = TAG_Long(loottableseed)
