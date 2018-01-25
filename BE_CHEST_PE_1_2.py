@@ -37,7 +37,7 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 		item["Damage"] = TAG_Short(item_damage)
 		item["Count"] = TAG_Byte(item_count)
 		item["Slot"] = TAG_Byte(item_slot)
-		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0::
+		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0:
 			item["tag"] = TAG_Compound()
 			tag = item["tag"]
 			if len(item_tag_ench_l) > 0:
