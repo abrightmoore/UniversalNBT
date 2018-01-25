@@ -22,12 +22,15 @@ def wrapText(text,length):
 	return textwrap.fill(text,length)
 
 def makeLore(ADJECTIVES,lineWrap):
-	PREP = ["There are","You see","You sense","Research shows","You uncover","Without doubt","There might be","Scholars say","A quick look shows","Close examination shows","We find"]	
+	PREP = ["There are","You see","You sense","Research shows there are","You uncover","Without doubt there are","There might be","Scholars say there are","A quick look shows there are","Close examination shows","We find"]	
 	INDIC = ["signs","hints","feelings","stenches","fingerprints","markings","glyphs","smells","bumps","cracks","shapes","knobs","buttons","stripes","chequers","tassels","wires","colours"]
 	NOUNS = ["magic","evil","dread","shame","honey","righteousnous","fear","happiness","sadness","sweat","vegemite","hope","silver","the ocean","lichen","moss","dirt","zombie flesh"]
 	QTY = ["all over","covering","dotted around","placed randomly on","sitting low on","climbing all the way up","underneath","on top of","encircling","obscuring","powering","charging"]
 	
-	result = PREP[randint(0,len(PREP)-1)]+" "+ADJECTIVES[randint(0,len(ADJECTIVES)-1)]+" "+INDIC[randint(0,len(INDIC)-1)]
+	result = PREP[randint(0,len(PREP)-1)]+" "
+	if randint(1,10) > 6:
+		result = result+ADJECTIVES[randint(0,len(ADJECTIVES)-1)]+" "
+	result = result+INDIC[randint(0,len(INDIC)-1)]
 	if randint(1,10) > 6:
 		result = result+" of "+NOUNS[randint(0,len(NOUNS)-1)]
 	result = result+" "+QTY[randint(0,len(QTY)-1)]+" this item."
@@ -37,7 +40,7 @@ def makeLore(ADJECTIVES,lineWrap):
 
 def generateItems(ADJECTIVES,qty):
 	# Randomly creates new Minecraft items
-	formatting = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","m","n","l","k","o"]
+	formatting = ["1","2","3","4","5","6","7","8","a","b","c","d","e","f","m","n","l","k","o"]
 	PRO = ["","One ","A ","The ","That ","This "]
 	NOUNS = ["AB","Jigarbov","Ron","Dragnoz","The Wandering Wizards","Le Moesh","The World Foundry","The Pathway","Mojang","The Map Maker","The Dragon","The Overworld","The Nether","The End","The Villagers"]
 	idMappings = UNBT.updateAssociations() # Master data for Minecraft
@@ -74,6 +77,8 @@ def generateItems(ADJECTIVES,qty):
 		item_count = 1
 		items.append((item_id,item_damage,slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l))
 		slot += 1
+	
+	# for i in xrange(0,100):		print makeLore(ADJECTIVES,140)
 	
 	return items
 	
