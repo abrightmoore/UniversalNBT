@@ -32,13 +32,13 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 	control["z"] = TAG_Int(z)
 	control["Items"] = TAG_List()
 	itemsTag = control["Items"]
-	for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l) in items:
+	for (item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion) in items:
 		item = TAG_Compound()
 		item["id"] = TAG_Short(int(itemNameToNumber(item_id,associations)))
 		item["Damage"] = TAG_Short(item_damage)
 		item["Count"] = TAG_Byte(item_count)
 		item["Slot"] = TAG_Byte(item_slot)
-		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0:
+		if len(item_tag_ench_l) > 0 or item_display_name != "" or len(item_display_lore_l) > 0 or item_potion != "":
 			item["tag"] = TAG_Compound()
 			tag = item["tag"]
 			if len(item_tag_ench_l) > 0:
@@ -57,7 +57,8 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 				display["Lore"] = TAG_List()
 				for lore in item_display_lore_l:
 					display["Lore"].append(TAG_String(lore))
-
+			if item_potion != "":
+				tag["Potion"] = TAG_String(item_potion)
 		itemsTag.append(item)		
 	control["isMovable"] = TAG_Int(1)
 	return control
