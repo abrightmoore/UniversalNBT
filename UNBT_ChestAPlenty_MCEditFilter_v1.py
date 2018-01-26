@@ -66,7 +66,7 @@ def generateItems(ADJECTIVES,qty):
 		item_tag_ench_l = []
 		item_potion = ""
 		item_display_name = "§"+formatting[randint(0,13)]+str(item_id.replace("minecraft:","").replace("_"," ").title())
-		if randint(1,10) > 8:
+		if randint(1,10) > 1:
 			item_display_name = item_display_name+" of "+NOUNS[randint(0,len(NOUNS)-1)]
 			loreLines = makeLore(ADJECTIVES,len(item_display_name)).split("\n")
 			for lore in loreLines:

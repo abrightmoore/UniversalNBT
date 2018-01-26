@@ -5,6 +5,7 @@ inputs = (
 	  ("Mode", ("READ","WRITE")),
 	  ("adrian@theworldfoundry.com", "label"),
 	  ("http://theworldfoundry.com", "label"),
+	  ("Includes contributions by @PathwayMC", "label"),
 )
 
 def perform(level,box,options): # MCEdit Unified
@@ -77,6 +78,7 @@ def perform(level,box,options): # MCEdit Unified
 						if foundHandler == False:
 							print "WARN: ","No handler found for ",UNBT.UCOMMAND.TYPE," at ",(x,y,z)
 
+					
 					if e["id"].value in nativeChestIDList: # This is a sign because it has an NBT id which matches one of the known values
 						# Find out what architecture this NBT object corresponds to
 						print "Found ",UNBT.UCHEST.TYPE,": ",str(e)
@@ -95,7 +97,8 @@ def perform(level,box,options): # MCEdit Unified
 								foundHandler = True
 						if foundHandler == False:
 							print "WARN: ","No handler found for ",UNBT.UCHEST.TYPE," at ",(x,y,z)
-
+					
+							
 	elif options["Mode"] == "WRITE":
 		architecture = level.gamePlatform.upper() # At the time of writing this is UNKNOWN for Java and PE for Bedrock.
 		# Until we've got a way of getting the version out of level, this is static
