@@ -112,6 +112,7 @@ def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
 			item_display_lore_l = []
 			item_tag_ench_l = []
 			item_display_name = ""
+			item_potion = ""
 			if "tag" in item:
 				item_tag = item["tag"]
 				if "display" in item_tag: # compound
@@ -127,7 +128,9 @@ def fromNative(nativeNBT): # Version specific mapping from supplied NBT format
 						if "lvl" in ench: item_tag_ench_lvl = ench["lvl"].value
 						else: item_tag_ench_lvl = 0
 						item_tag_ench_l.append((item_tag_ench_id,item_tag_ench_lvl))
-			items.append((item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l))
+				if "Potion" in item_tag:
+					item_potion = item_tag["Potion"].value
+			items.append((item_id,item_damage,item_slot,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion))
 	if "LootTable" in nativeNBT: loottable = nativeNBT["LootTable"].value
 	else: loottable = ""
 	if "LootTableSeed" in nativeNBT: loottableseed = nativeNBT["LootTableSeed"].value
