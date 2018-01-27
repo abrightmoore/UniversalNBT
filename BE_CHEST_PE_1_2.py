@@ -46,8 +46,8 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 				ench = tag["ench"]
 				for (ench_id,ench_lvl) in item_tag_ench_l:
 					theEnch = TAG_Compound()
-					theEnch["id"] = TAG_Int(ench_id)
-					theEnch["lvl"] = TAG_Int(ench_lvl)
+					theEnch["id"] = TAG_Short(ench_id)
+					theEnch["lvl"] = TAG_Short(ench_lvl)
 					ench.append(theEnch)
 			if len(item_display_name) != "":
 				tag["display"] = TAG_Compound()
@@ -60,7 +60,7 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 			if item_potion != "":
 				tag["Potion"] = TAG_String(item_potion)
 		itemsTag.append(item)		
-	control["isMovable"] = TAG_Int(1)
+	control["isMovable"] = TAG_Byte(1)
 	return control
 
 def reterpret(text):

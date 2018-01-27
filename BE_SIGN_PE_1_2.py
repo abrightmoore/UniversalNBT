@@ -20,7 +20,7 @@ def toNative(canonical): # Version specific mapping to NBT from universal class
 	control = TAG_Compound()
 	control["id"] = TAG_String(id)
 	control["Text"] = TAG_String(Text1+"\n"+Text2+"\n"+Text3+"\n"+Text4) # TODO: Need to prevent appending more newlines than needed
-	control["isMovable"] = TAG_Int(1)
+	control["isMovable"] = TAG_Byte(1)
 	control["x"] = TAG_Int(x)
 	control["y"] = TAG_Int(y)
 	control["z"] = TAG_Int(z)

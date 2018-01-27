@@ -58,7 +58,7 @@ inputs = (
 					"long_weakness"
 					)),
 			("Lore:",("string","value=Legendary,Great War Artifact,+10 points")),
-			("Enchantments:",("string","value=sharpness:2,smite:1")),
+			("Enchantments:",("string","value=9:2,10:1")),
 			("Enchant Hint (not used):",(
 					"protection",
 					"fire_protection",
@@ -91,6 +91,7 @@ inputs = (
 					"mending",
 					"vanishing_curse"
 					)),
+			("Fill Chest?", False),
 			("Creates an item in your selection.", "label"),
 			("Places it in a new chest.", "label"),
 			("Use comma seperated lists.", "label"),
@@ -133,9 +134,13 @@ def generateItem(id,damage,name,potion,lore,enchants):
 	item_damage = damage
 	item_display_lore_l = theLore_l
 	item_tag_ench_l = []
-	for enchval in enchant_l:
-		part = enchval.split(":")
-		item_tag_ench_l.append((int(idEnchant[part[0]]),int(part[1])))
+	if enchants != "":
+		for enchval in enchant_l:
+			part = enchval.split(":")
+			# TODO: Given the canonical (Java) name, find the corresponding id for the target architecture. Master data issue
+			
+			#item_tag_ench_l.append((int(idEnchant[part[0]]),int(part[1])))
+			item_tag_ench_l.append((int(part[0]),int(part[1]))) # The master data is a little odd. Just use numbers
 	item_potion = NAMESPACEPREFIX+potion
 	
 	return (item_id,item_damage,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion)
@@ -189,7 +194,8 @@ def perform(level, box, options):
 							if i == "": # Empty
 								newChest.items.append((item_id,item_damage,count,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion)) # Carefully place the new item
 								print "Item placed in slot",i
-								break
+								if options["Fill Chest?"] == False:
+									break
 							count += 1
 						else:
 							print "WARN: Insufficient space (slots used = ",len(newChest.items),") in the chest at ",x,y,z," to insert the new item."
