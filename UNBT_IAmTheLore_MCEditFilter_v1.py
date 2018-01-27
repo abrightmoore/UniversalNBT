@@ -58,7 +58,7 @@ inputs = (
 					"long_weakness"
 					)),
 			("Lore:",("string","value=Legendary,Great War Artifact,+10 points")),
-			("Enchantments:",("string","value=9:2,10:1")),
+			("Enchantments:",("string","value=sharpness:2,smite:1")),
 			("Enchant Hint (not used):",(
 					"protection",
 					"fire_protection",
@@ -139,8 +139,8 @@ def generateItem(id,damage,name,potion,lore,enchants):
 			part = enchval.split(":")
 			# TODO: Given the canonical (Java) name, find the corresponding id for the target architecture. Master data issue
 			
-			#item_tag_ench_l.append((int(idEnchant[part[0]]),int(part[1])))
-			item_tag_ench_l.append((int(part[0]),int(part[1]))) # The master data is a little odd. Just use numbers
+			item_tag_ench_l.append((int(idEnchant[part[0]]),int(part[1])))
+			#item_tag_ench_l.append((int(part[0]),int(part[1]))) # The master data is a little odd. Just use numbers
 	item_potion = NAMESPACEPREFIX+potion
 	
 	return (item_id,item_damage,item_count,item_display_name,item_display_lore_l,item_tag_ench_l,item_potion)
